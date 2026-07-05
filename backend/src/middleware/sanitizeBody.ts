@@ -11,7 +11,7 @@ export const sanitizeBody = expressAsyncHandler(
       throw new Error("Fields can not be empty");
     }
 
-    if (typeof name !== "string") {
+    if (name !== undefined && typeof name !== "string") {
       res.status(400);
       throw new Error("Name must be a string");
     }

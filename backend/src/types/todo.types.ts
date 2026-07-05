@@ -22,3 +22,11 @@ export interface UpdateTodoBody {
   status?: Status;
   hidden?: boolean;
 }
+
+export interface TodoQuery {
+  name?: string;
+  status?: Status;
+  hidden?: string;
+  page?: string;
+  limit?: string;
+}

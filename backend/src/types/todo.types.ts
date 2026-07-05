@@ -29,4 +29,5 @@ export interface TodoQuery {
   hidden?: string;
   page?: string;
   limit?: string;
+  sort?: string;
 }

@@ -3,12 +3,15 @@ import todorouter from "./routes/todo.routes.js";
 import connectDB from "./config/db.js";
 import "dotenv/config";
 import { errorHandler } from "./middleware/error.middleware.js";
+import swaggerUi from "swagger-ui-express";
+import swaggerSpec from "./config/swagger.js";
 
 const app = express();
 
 app.use(express.json());
 
 app.use("/api/todos", todorouter);
+app.use("/api-doc", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 app.use(errorHandler);
 

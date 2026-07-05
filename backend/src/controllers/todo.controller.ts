@@ -12,9 +12,21 @@ import { type QueryFilter } from "mongoose";
 
 export const getTodos = expressAsyncHandler(
   async (req: Request<{}, {}, {}, TodoQuery>, res: Response) => {
+    const allowedSorts = [
+      "-name",
+      "name",
+      "-createdAt",
+      "createdAt",
+      "updatedAt",
+      "-updatedAt",
+      "status",
+      "-status",
+    ];
     const { status, hidden, name } = req.query;
     let limit = Number(req.query.limit) || 10;
-
+    const sort = allowedSorts.includes(req.query.sort as string)
+      ? req.query.sort
+      : "-createdAt";
     let page = Number(req.query.page) || 1;
 
     const filter: QueryFilter<ITodo> = {};
@@ -48,7 +60,7 @@ export const getTodos = expressAsyncHandler(
       page = pages;
     }
     const skip = (page - 1) * limit;
-    const todos = await Todo.find(filter).skip(skip).limit(limit);
+    const todos = await Todo.find(filter).skip(skip).limit(limit).sort(sort);
     const isEmpty = total === 0;
     const firstPage = page === 1;
     const lastPage = pages === 0 || page === pages;

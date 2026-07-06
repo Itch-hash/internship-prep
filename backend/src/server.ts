@@ -5,6 +5,7 @@ import "dotenv/config";
 import { errorHandler } from "./middleware/error.middleware.js";
 import swaggerUi from "swagger-ui-express";
 import swaggerSpec from "./config/swagger.js";
+import { notFound } from "./middleware/notFound.middleware.js";
 
 const app = express();
 
@@ -12,7 +13,7 @@ app.use(express.json());
 
 app.use("/api/todos", todorouter);
 app.use("/api-doc", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
-
+app.use(notFound);
 app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;

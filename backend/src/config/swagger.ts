@@ -1,6 +1,5 @@
 import swaggerjsdoc from "swagger-jsdoc";
-
-const PORT = process.env.PORT;
+import { PORT } from "./dotenv.js";
 
 if (!PORT) {
   throw new Error("PORT is undefined in the env var");

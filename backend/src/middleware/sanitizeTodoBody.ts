@@ -2,7 +2,7 @@ import expressAsyncHandler from "express-async-handler";
 import type { NextFunction, Request, Response } from "express";
 import { Status } from "../types/todo.types.js";
 
-export const sanitizeBody = expressAsyncHandler(
+const sanitizeTodoBody = expressAsyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
     const { name, status, hidden } = req.body;
 
@@ -35,3 +35,5 @@ export const sanitizeBody = expressAsyncHandler(
     next();
   },
 );
+
+export default sanitizeTodoBody;

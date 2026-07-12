@@ -1,5 +1,5 @@
 import { type Request, type Response } from "express";
-import Todo from "../models/todo.js";
+import Todo from "../models/todo.model.js";
 import {
   type CreateTodoBody,
   type ITodo,
@@ -60,7 +60,10 @@ export const getTodos = expressAsyncHandler(
       page = pages;
     }
     const skip = (page - 1) * limit;
-    const todos = await Todo.find(filter).skip(skip).limit(limit).sort(sort);
+    const todos = await Todo.find({ ...filter, user: req.user!._id })
+      .skip(skip)
+      .limit(limit)
+      .sort(sort);
     const isEmpty = total === 0;
     const firstPage = page === 1;
     const lastPage = pages === 0 || page === pages;
@@ -77,12 +80,11 @@ export const getTodos = expressAsyncHandler(
     });
   },
 );
-
 export const getTodo = expressAsyncHandler(
   async (req: Request<{ id: string }>, res: Response) => {
     const { id } = req.params;
 
-    const foundTodo = await Todo.findById(id);
+    const foundTodo = await Todo.findOne({ _id: id, user: req.user!._id });
     if (!foundTodo) {
       res.status(404);
       throw new Error("No Task Found");
@@ -96,7 +98,10 @@ export const deleteTodo = expressAsyncHandler(
   async (req: Request<{ id: string }>, res: Response) => {
     const { id } = req.params;
 
-    const foundTodo = await Todo.findByIdAndDelete(id);
+    const foundTodo = await Todo.findOneAndDelete({
+      _id: id,
+      user: req.user!._id,
+    });
     if (!foundTodo) {
       res.status(404);
       throw new Error("Task not found!");
@@ -119,6 +124,7 @@ export const createTodo = expressAsyncHandler(
       name,
       status: status ?? Status.Todo,
       hidden: hidden ?? false,
+      user: req.user!._id,
     });
     res.status(201).json(todo);
   },
@@ -135,10 +141,14 @@ export const updateTodo = expressAsyncHandler(
     if (status !== undefined) updateData.status = status;
     if (hidden !== undefined) updateData.hidden = hidden;
 
-    const updatedTodo = await Todo.findByIdAndUpdate(id, updateData, {
-      runValidators: true,
-      returnDocument: "after",
-    });
+    const updatedTodo = await Todo.findOneAndUpdate(
+      { _id: id, user: req.user!._id },
+      updateData,
+      {
+        runValidators: true,
+        returnDocument: "after",
+      },
+    );
 
     if (!updatedTodo) {
       res.status(404);

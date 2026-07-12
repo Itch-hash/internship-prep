@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import type { Request, Response, NextFunction } from "express";
 
-export const validateObjectId = async (
+const validateObjectId = async (
   req: Request<{ id: string }>,
   res: Response,
   next: NextFunction,
@@ -13,3 +13,5 @@ export const validateObjectId = async (
   }
   next();
 };
+
+export default validateObjectId;

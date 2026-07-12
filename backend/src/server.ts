@@ -6,11 +6,17 @@ import swaggerUi from "swagger-ui-express";
 import swaggerSpec from "./config/swagger.js";
 import { notFound } from "./middleware/notFound.middleware.js";
 import { NODE_ENV, PORT } from "./config/dotenv.js";
+import userRouter from "./routes/user.routes.js";
+import limiter from "./config/limiter.js";
+import authRouter from "./routes/auth.routes.js";
 
 const app = express();
 
 app.use(express.json());
-
+app.use(express.urlencoded({ extended: false }));
+app.use(limiter);
+app.use("/api/auth", authRouter);
+app.use("/api/user", userRouter);
 app.use("/api/todos", todorouter);
 app.use("/api-doc", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use(notFound);

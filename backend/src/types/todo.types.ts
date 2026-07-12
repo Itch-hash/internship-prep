@@ -1,3 +1,5 @@
+import type mongoose from "mongoose";
+
 export enum Status {
   Todo = "To do",
   InProgress = "In-Progress",
@@ -10,6 +12,7 @@ export interface ITodo {
   id: string;
   createdAt: string;
   updatedAt: string;
+  user: mongoose.Types.ObjectId;
 }
 export interface CreateTodoBody {
   name: string;

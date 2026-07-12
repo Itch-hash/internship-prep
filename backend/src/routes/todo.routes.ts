@@ -6,8 +6,9 @@ import {
   updateTodo,
   getTodo,
 } from "../controllers/todo.controller.js";
-import { validateObjectId } from "../middleware/validateObjectId.js";
-import { sanitizeBody } from "../middleware/sanitizeBody.js";
+import validateObjectId from "../middleware/validateObjectId.js";
+import sanitizeTodoBody from "../middleware/sanitizeTodoBody.js";
+import authorize from "../middleware/auth.middleware.js";
 
 const todorouter = Router();
 
@@ -57,7 +58,7 @@ const todorouter = Router();
  *       200:
  *         description: List of todos
  */
-todorouter.get("/", getTodos);
+todorouter.get("/", authorize, getTodos);
 
 /**
  * @swagger
@@ -82,7 +83,7 @@ todorouter.get("/", getTodos);
  *       404:
  *         description: Todo not found
  */
-todorouter.get("/:id", validateObjectId, getTodo);
+todorouter.get("/:id", authorize, validateObjectId, getTodo);
 
 /**
  * @swagger
@@ -113,7 +114,7 @@ todorouter.get("/:id", validateObjectId, getTodo);
  *       201:
  *         description: Todo created
  */
-todorouter.post("/", sanitizeBody, createTodo);
+todorouter.post("/", authorize, sanitizeTodoBody, createTodo);
 
 /**
  * @swagger
@@ -135,7 +136,7 @@ todorouter.post("/", sanitizeBody, createTodo);
  *         description: Todo not found
  */
 
-todorouter.delete("/:id", validateObjectId, deleteTodo);
+todorouter.delete("/:id", authorize, validateObjectId, deleteTodo);
 
 /**
  * @swagger
@@ -169,6 +170,12 @@ todorouter.delete("/:id", validateObjectId, deleteTodo);
  *       404:
  *         description: Todo not found
  */
-todorouter.patch("/:id", validateObjectId, sanitizeBody, updateTodo);
+todorouter.patch(
+  "/:id",
+  authorize,
+  validateObjectId,
+  sanitizeTodoBody,
+  updateTodo,
+);
 
 export default todorouter;
